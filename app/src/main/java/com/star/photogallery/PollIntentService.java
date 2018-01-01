@@ -46,6 +46,8 @@ public class PollIntentService extends IntentService {
             alarmManager.cancel(pendingIntent);
             pendingIntent.cancel();
         }
+
+        QueryPreferences.setServiceOn(context, isOn);
     }
 
     public static boolean isServiceAlarmOn(Context context) {

@@ -1,6 +1,7 @@
 package com.star.photogallery;
 
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,7 +10,6 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import java.util.List;
@@ -17,6 +17,16 @@ import java.util.List;
 public class PollServiceUtils {
 
     private static final String NOTIFICATION_CHANNEL_ID = "channelId";
+
+    public static final String ACTION_SHOW_NOTIFICATION =
+            "com.star.photogallery.SHOW_NOTIFICATION";
+
+    public static final String PERM_PRIVATE = "com.star.photogallery.PRIVATE";
+
+    public static final String REQUEST_CODE_KEY = "REQUEST_CODE_KEY";
+    private static final int REQUEST_CODE_VALUE = 0;
+
+    public static final String NOTIFICATION_KEY = "NOTIFICATION";
 
     public static void pollFlickr(Context context) {
 
@@ -61,12 +71,18 @@ public class PollServiceUtils {
                     .setAutoCancel(true)
                     .build();
 
-            NotificationManagerCompat notificationManagerCompat =
-                    NotificationManagerCompat.from(context);
-            notificationManagerCompat.notify(0, notification);
+            showBackgroundNotification(context, REQUEST_CODE_VALUE, notification);
         }
 
         QueryPreferences.setLastResultId(context, resultId);
+    }
+
+    private static void showBackgroundNotification(
+            Context context, int requestCode, Notification notification) {
+        Intent intent = new Intent(ACTION_SHOW_NOTIFICATION);
+        intent.putExtra(REQUEST_CODE_KEY, requestCode);
+        intent.putExtra(NOTIFICATION_KEY, notification);
+        context.sendOrderedBroadcast(intent, PERM_PRIVATE, null, null, Activity.RESULT_OK, null, null);
     }
 
     private static boolean isNetworkAvailableAndConnected(Context context) {

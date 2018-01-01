@@ -65,6 +65,8 @@ public class PollJobService extends JobService {
         } else {
             jobScheduler.cancel(JOB_ID);
         }
+
+        QueryPreferences.setServiceOn(context, isOn);
     }
 
     public static boolean isServiceScheduleOn(Context context) {
